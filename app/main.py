@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 
+# Re-trigger: ECR repo was recreated with EmptyOnDelete, image needs re-pushing again.
 app = FastAPI(title="aws-ecs-app", version="1.0.0")
 
 _preferences = {"theme": "dark", "notifications": True}
