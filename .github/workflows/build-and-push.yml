@@ -3,6 +3,8 @@ name: Build and Push to ECR
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'imageDetail.json'
 
 permissions:
   id-token: write
@@ -61,9 +63,24 @@ jobs:
       - name: Push image to ECR
         run: docker push 107737161507.dkr.ecr.us-east-1.amazonaws.com/aws-ecs-app:${{ steps.version.outputs.version }}
 
-      - name: Tag release commit
+      - name: Record pushed image for pipeline deploy, and tag release
         run: |
+          echo '{"ImageURI":"107737161507.dkr.ecr.us-east-1.amazonaws.com/aws-ecs-app:${{ steps.version.outputs.version }}"}' > imageDetail.json
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add imageDetail.json
+          git commit -m "chore: record pushed image for pipeline deploy (v${{ steps.version.outputs.version }})"
           git tag "v${{ steps.version.outputs.version }}"
-          git push origin "v${{ steps.version.outputs.version }}"
+
+          for attempt in 1 2 3 4 5; do
+            if git push origin HEAD:main && git push origin "v${{ steps.version.outputs.version }}"; then
+              echo "Pushed on attempt $attempt"
+              exit 0
+            fi
+            echo "Push rejected (attempt $attempt) - rebasing and retrying"
+            git fetch origin main
+            git rebase origin/main
+            sleep 3
+          done
+          echo "Failed to push after 5 attempts"
+          exit 1
