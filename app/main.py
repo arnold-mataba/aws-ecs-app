@@ -1,8 +1,7 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 
-# Re-trigger: ECR repo was recreated with EmptyOnDelete, image needs re-pushing again.
-app = FastAPI(title="aws-ecs-app", version="1.0.0")
+app = FastAPI(title="aws-ecs-app", version="1.1.0")
 
 _preferences = {"theme": "dark", "notifications": True}
 _trials = [
@@ -18,12 +17,13 @@ _future = [
 
 @app.get("/", response_class=HTMLResponse)
 def home():
-    return """
+    return f"""
     <html>
       <head><title>ECS CI/CD Lab</title></head>
       <body style="font-family: sans-serif; text-align: center; margin-top: 10%;">
         <h1>ARNOLD CIKURU MATABA</h1>
         <p>This is my work on the lab on ECS CI/CD</p>
+        <p>App version: {app.version}</p>
       </body>
     </html>
     """
@@ -32,6 +32,11 @@ def home():
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+
+@app.get("/version")
+def version():
+    return {"version": app.version}
 
 
 @app.get("/preferences")
