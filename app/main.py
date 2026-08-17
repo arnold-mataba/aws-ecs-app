@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 
-app = FastAPI(title="aws-ecs-app")
+app = FastAPI(title="aws-ecs-app", version="1.0.0")
 
 _preferences = {"theme": "dark", "notifications": True}
 _trials = [
