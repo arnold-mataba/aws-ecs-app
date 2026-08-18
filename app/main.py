@@ -1,7 +1,9 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 
-app = FastAPI(title="aws-ecs-app", version="1.1.0")
+app = FastAPI(title="aws-ecs-app", version=os.environ.get("APP_VERSION", "dev"))
 
 _preferences = {"theme": "dark", "notifications": True}
 _trials = [

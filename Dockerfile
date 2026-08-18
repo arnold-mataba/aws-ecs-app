@@ -6,9 +6,12 @@ RUN pip install --no-cache-dir --user -r requirements.txt
 
 FROM python:3.12-slim
 
+ARG APP_VERSION=dev
+
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PATH=/home/appuser/.local/bin:$PATH
+    PATH=/home/appuser/.local/bin:$PATH \
+    APP_VERSION=${APP_VERSION}
 
 RUN useradd --create-home --shell /usr/sbin/nologin appuser
 USER appuser

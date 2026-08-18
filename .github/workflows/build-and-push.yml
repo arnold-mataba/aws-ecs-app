@@ -58,7 +58,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build image
-        run: docker build -t 107737161507.dkr.ecr.us-east-1.amazonaws.com/aws-ecs-app:${{ steps.version.outputs.version }} .
+        run: docker build --build-arg APP_VERSION=${{ steps.version.outputs.version }} -t 107737161507.dkr.ecr.us-east-1.amazonaws.com/aws-ecs-app:${{ steps.version.outputs.version }} .
 
       - name: Push image to ECR
         run: docker push 107737161507.dkr.ecr.us-east-1.amazonaws.com/aws-ecs-app:${{ steps.version.outputs.version }}
